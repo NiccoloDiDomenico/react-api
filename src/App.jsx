@@ -8,7 +8,7 @@ const initialFormData = {
   image: "",
 }
 
-const apiURL = "http//localhost:3000/"
+const apiURL = "http://localhost:3000/"
 
 
 function App() {
@@ -18,13 +18,13 @@ function App() {
   // Variabili reattive per Input
   const [formData, setFormData] = useState(initialFormData)
 
+  // Axios: index
   useEffect(() => {
     axios.get(`${apiURL}posts`).then((resp) => {
       console.log(resp);
+      setPostList(resp.data)
     })
   }, []);
-
-
 
   // Funzioni
   function handleInputChange(event) {
@@ -66,7 +66,29 @@ function App() {
         {/* Title */}
         <h1 className='text-center py-3 m-0'>Blog form multifield</h1>
       </header>
+
       <main className='bg-danger-subtle'>
+        {/* PostsList section */}
+        <section className='container py-3'>
+          <div class="row row-cols-1 row-cols-md-2 g-4">
+            {postList.length > 0 ? (
+              <div className="col">
+                {postList.map((curPost) => (
+                  <div key={curPost.id} className="card">
+                    <img src={`${apiURL}${curPost.image}`} className="card-img-top" alt={curPost.title} />
+                    <div className="card-body">
+                      <h5 className="card-title">{curPost.title}</h5>
+                      <p className="card-text">{curPost.content}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <h5>Completa il form per creare un post</h5>
+            )}
+          </div>
+        </section>
+
         {/* Form section */}
         <section className='container py-3'>
           <h3 className='my-3'>Crea il tuo post!</h3>
@@ -89,29 +111,6 @@ function App() {
             {/* Submit btn */}
             <button type='submit' className='btn btn-danger my-3'>Invia</button>
           </form>
-        </section>
-        {/* PostsList section */}
-        <section className='container pb-3'>
-          {postList.length > 0 ? (
-            <ul className="list-group">
-              {postList.map((curPost) => (
-                <li key={curPost.id} className="list-group">
-                  <div className="card text-bg-danger mb-3">
-                    <div className="card-header">
-                      <img src={`${apiURL}${curPost.image}`} alt="" />
-                    </div>
-                    <div className="card-body">
-                      <h3 className="card-title">{curPost.title}</h3>
-                      <p className="card-text">{curPost.content}</p>
-                    </div>
-                    <button className='btn text-end' onClick={() => removePost(curPost.id)}>Elimina</button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <h5>Completa il form per creare un post</h5>
-          )}
         </section>
       </main>
     </>
