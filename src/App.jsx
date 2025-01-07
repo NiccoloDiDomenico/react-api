@@ -8,6 +8,8 @@ const initialFormData = {
   image: "",
 }
 
+const apiURL = "http//localhost:3000/"
+
 
 function App() {
   // Variabili reattive
@@ -15,6 +17,14 @@ function App() {
 
   // Variabili reattive per Input
   const [formData, setFormData] = useState(initialFormData)
+
+  useEffect(() => {
+    axios.get(`${apiURL}posts`).then((resp) => {
+      console.log(resp);
+    })
+  }, []);
+
+
 
   // Funzioni
   function handleInputChange(event) {
@@ -87,7 +97,9 @@ function App() {
               {postList.map((curPost) => (
                 <li key={curPost.id} className="list-group">
                   <div className="card text-bg-danger mb-3">
-                    <div className="card-header">{curPost.image}</div>
+                    <div className="card-header">
+                      <img src={`${apiURL}${curPost.image}`} alt="" />
+                    </div>
                     <div className="card-body">
                       <h3 className="card-title">{curPost.title}</h3>
                       <p className="card-text">{curPost.content}</p>
