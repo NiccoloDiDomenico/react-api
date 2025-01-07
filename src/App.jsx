@@ -10,7 +10,6 @@ const initialFormData = {
 
 const apiURL = "http://localhost:3000/"
 
-
 function App() {
   // Variabili reattive
   const [postList, setPostList] = useState([])
@@ -43,21 +42,21 @@ function App() {
   function handleSubmit(event) {
     event.preventDefault();
 
-    const newPost = {
-      ...formData,
-      id: Date.now()
-    }
-
-    const newPostList = [...postList, newPost]
-
-    setPostList(newPostList)
-
-    setFormData(initialFormData)
+    // Axios: store
+    axios.post(`${apiURL}posts`, formData).then((resp) => {
+      // console.log(resp);
+      const newPostList = [...postList, resp.data]
+      setPostList(newPostList)
+      setFormData(initialFormData)
+    })
   }
 
   function removePost(itemToRemove) {
-    const updutePostList = postList.filter((curPost) => curPost.id !== itemToRemove)
-    setPostList(updutePostList)
+    // Axios: destroy
+    axios.delete(`${apiURL}posts/${itemToRemove}`).then((resp) => {
+      const updutePostList = postList.filter((curPost) => curPost.id !== itemToRemove)
+      setPostList(updutePostList)
+    })
   }
 
   return (
@@ -70,7 +69,7 @@ function App() {
       <main className='bg-danger-subtle'>
         {/* PostsList section */}
         <section className='container py-3'>
-          <div class="row row-cols-1 row-cols-md-2 g-4">
+          <div className="row row-cols-1 row-cols-md-2 g-4">
             {postList.length > 0 ? (
               <div className="col">
                 {postList.map((curPost) => (
@@ -79,6 +78,7 @@ function App() {
                     <div className="card-body">
                       <h5 className="card-title">{curPost.title}</h5>
                       <p className="card-text">{curPost.content}</p>
+                      <button className='btn btn-danger' onClick={() => removePost(curPost.id)}>Cancella</button>
                     </div>
                   </div>
                 ))}
@@ -101,7 +101,7 @@ function App() {
             {/* Content */}
             <div className="mb-3">
               <label htmlFor="description" className="form-label">Contenuto del post</label>
-              <textarea className="form-control" id="description" rows="3" name='description' value={formData.content} onChange={handleInputChange} placeholder="Inserisci il contenuto del post"></textarea>
+              <textarea className="form-control" id="description" rows="3" name='content' value={formData.content} onChange={handleInputChange} placeholder="Inserisci il contenuto del post"></textarea>
             </div>
             {/* Image */}
             <div className="mb-3">
