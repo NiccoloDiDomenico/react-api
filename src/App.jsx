@@ -1,14 +1,15 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
+import PostCard from './components/PostCard'
 
 const initialFormData = {
   id: "",
   title: "",
   content: "",
-  image: "",
+  image: ""
 }
 
-const apiURL = "http://localhost:3000"
+const apiURL = import.meta.env.VITE_API_URL
 
 function App() {
   // Variabili reattive
@@ -44,17 +45,17 @@ function App() {
 
     // Axios: store
     axios.post(`${apiURL}/posts`, formData).then((resp) => {
-      console.log(resp);
+      // console.log(resp);
       const newPostList = [...postList, resp.data]
       setPostList(newPostList)
       setFormData(initialFormData)
     })
   }
 
-  function removePost(itemToRemove) {
+  function handleDelate(idToRemove) {
     // Axios: destroy
-    axios.delete(`${apiURL}/posts/${itemToRemove}`).then((resp) => {
-      const updutePostList = postList.filter((curPost) => curPost.id !== itemToRemove)
+    axios.delete(`${apiURL}/posts/${idToRemove}`).then((resp) => {
+      const updutePostList = postList.filter((curPost) => curPost.id !== idToRemove)
       setPostList(updutePostList)
     })
   }
@@ -68,29 +69,20 @@ function App() {
 
       <main className='bg-danger-subtle'>
         {/* PostsList section */}
-        <section className='container py-3'>
-          <div className="row row-cols-1 row-cols-md-2 g-4">
-            {postList.length > 0 ? (
-              <div className="col">
-                {postList.map((curPost) => (
-                  <div key={curPost.id} className="card">
-                    <img src={`${apiURL}/${curPost.image}`} className="card-img-top" alt={curPost.title} />
-                    <div className="card-body">
-                      <h5 className="card-title">{curPost.title}</h5>
-                      <p className="card-text">{curPost.content}</p>
-                      <button className='btn btn-danger' onClick={() => removePost(curPost.id)}>Cancella</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <h5>Completa il form per creare un post</h5>
-            )}
-          </div>
+        <section className='container pt-5'>
+          {postList.length > 0 ? (
+            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 gx-0 gy-2">
+              {postList.map((curPost) => (
+                <PostCard key={curPost.id} post={curPost} onCancel={() => handleDelate(curPost.id)} />
+              ))}
+            </div>
+          ) : (
+            <h5>Completa il form per creare un post</h5>
+          )}
         </section>
 
         {/* Form section */}
-        <section className='container py-3'>
+        <section className='container py-4'>
           <h3 className='my-3'>Crea il tuo post!</h3>
           <form onSubmit={handleSubmit}>
             {/* Title */}
