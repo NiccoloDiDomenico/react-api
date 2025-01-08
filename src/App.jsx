@@ -8,7 +8,7 @@ const initialFormData = {
   image: "",
 }
 
-const apiURL = "http://localhost:3000/"
+const apiURL = "http://localhost:3000"
 
 function App() {
   // Variabili reattive
@@ -19,7 +19,7 @@ function App() {
 
   // Axios: index
   useEffect(() => {
-    axios.get(`${apiURL}posts`).then((resp) => {
+    axios.get(`${apiURL}/posts`).then((resp) => {
       console.log(resp);
       setPostList(resp.data)
     })
@@ -43,8 +43,8 @@ function App() {
     event.preventDefault();
 
     // Axios: store
-    axios.post(`${apiURL}posts`, formData).then((resp) => {
-      // console.log(resp);
+    axios.post(`${apiURL}/posts`, formData).then((resp) => {
+      console.log(resp);
       const newPostList = [...postList, resp.data]
       setPostList(newPostList)
       setFormData(initialFormData)
@@ -53,7 +53,7 @@ function App() {
 
   function removePost(itemToRemove) {
     // Axios: destroy
-    axios.delete(`${apiURL}posts/${itemToRemove}`).then((resp) => {
+    axios.delete(`${apiURL}/posts/${itemToRemove}`).then((resp) => {
       const updutePostList = postList.filter((curPost) => curPost.id !== itemToRemove)
       setPostList(updutePostList)
     })
@@ -74,7 +74,7 @@ function App() {
               <div className="col">
                 {postList.map((curPost) => (
                   <div key={curPost.id} className="card">
-                    <img src={`${apiURL}${curPost.image}`} className="card-img-top" alt={curPost.title} />
+                    <img src={`${apiURL}/${curPost.image}`} className="card-img-top" alt={curPost.title} />
                     <div className="card-body">
                       <h5 className="card-title">{curPost.title}</h5>
                       <p className="card-text">{curPost.content}</p>
