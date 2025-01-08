@@ -9,22 +9,31 @@ const initialFormData = {
   image: ""
 }
 
+const tagsList = ["viaggi", "mare", "Italia", "estate", "cucina", "ricette", "Italia", "pasta", "tecnologia", "innovazione", "AI", "futuro", "fitness", "salute", "sport", "principianti", "libri", "lettura", "cultura", "consigli"]
+
 const apiURL = import.meta.env.VITE_API_URL
 
 function App() {
   // Variabili reattive
   const [postList, setPostList] = useState([])
-
-  // Variabili reattive per Input
   const [formData, setFormData] = useState(initialFormData)
+  const [tags, setTags] = useState(tagsList)
+  const [filter, setFilter] = useState("all")
 
   // Axios: index
   useEffect(() => {
-    axios.get(`${apiURL}/posts`).then((resp) => {
+    let url = `${apiURL}/posts`
+    console.log(filter);
+
+    if (filter !== "all") {
+      url += `?tags=${filter}`
+    }
+
+    axios.get(url).then((resp) => {
       console.log(resp);
       setPostList(resp.data)
     })
-  }, []);
+  }, [filter]);
 
   // Funzioni
   function handleInputChange(event) {
@@ -68,8 +77,18 @@ function App() {
       </header>
 
       <main className='bg-danger-subtle'>
+        {/* Filter section */}
+        <section className='container py-4'>
+          <select name="tags" id='' className='form-select w-25' value={filter} onChange={(event) => setFilter(event.target.value)} >
+            <option value="all">Tutti i post</option>
+            {tags.map((curTag, index) => (
+              <option value={curTag} key={index}>{curTag}</option>
+            ))}
+          </select>
+        </section>
+
         {/* PostsList section */}
-        <section className='container pt-5'>
+        <section className='container'>
           {postList.length > 0 ? (
             <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 gx-0 gy-2">
               {postList.map((curPost) => (
